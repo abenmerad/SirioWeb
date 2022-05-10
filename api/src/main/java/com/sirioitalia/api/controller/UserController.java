@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/users")
-    public ResponseEntity<Void> deleteUser(@RequestParam(value = "id", required = true) Long id) throws BusinessResourceException {
+    public ResponseEntity<Void> deleteUser(@RequestParam(value = "id", required = true) Long id)  {
 
         userService.deleteUser(id);
         return new ResponseEntity<Void>(HttpStatus.GONE);
@@ -62,9 +62,5 @@ public class UserController {
         return new ResponseEntity<User>(userFound.get(), HttpStatus.FOUND);
     }
 
-    @GetMapping(value = "/users/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable(value = "id") Long id) {
-        Optional<User> userFound = userService.findUserById(id);
-        return new ResponseEntity<User>(userFound.get(), HttpStatus.FOUND);
-    }
+
 }

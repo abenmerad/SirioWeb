@@ -3,8 +3,10 @@ package com.sirioitalia.api.service;
 import java.util.Collection;
 import java.util.Optional;
 import com.sirioitalia.api.model.User;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public interface UserService {
 
     Collection<User> getAllUsers();
