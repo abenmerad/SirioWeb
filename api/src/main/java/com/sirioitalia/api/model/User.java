@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -13,11 +16,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.sql.Date;
 
+
+
 @Entity // This tells Hibernate to make a table out of this class
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserEntity {
+@Table(name = "USER")
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -39,20 +45,27 @@ public class UserEntity {
     private String phoneNumber;
 
     @Column(name = "address")
-    private String adresse;
+    private String address;
 
     @Column(name = "city")
-    private String ville;
+    private String city;
 
-    @Column(name = "postal_code")
-    private String codePostal;
+    @Column(name = "postalCode")
+    private String postCode;
 
     @Column(name = "Country")
-    private String pays;
+    private String country;
 
-    @Column(name = "created_at")
-    private Date created_at;
+    @Column(name = "createdAt")
+    private Date createdAt;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
         return id;
