@@ -2,11 +2,14 @@ package com.sirioitalia.api.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.sirioitalia.api.model.User;
 import com.sirioitalia.api.service.UserService;
+
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -20,6 +23,11 @@ public class UserController {
     @GetMapping("/users")
     public Iterable<User> getUsers() {
         return userService.getUsers();
+    }
+
+    @GetMapping("/user/{id}")
+    public Optional<User> getUser(@PathVariable("id") final Long id) {
+        return userService.getUser(id);
     }
 
 }
