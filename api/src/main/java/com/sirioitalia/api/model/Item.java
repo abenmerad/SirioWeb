@@ -1,11 +1,13 @@
 package com.sirioitalia.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Collection;
 
 @Builder
@@ -13,7 +15,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Entity
 @Table(name = "items")
-public class Item {
+public class Item implements Serializable {
 
     @Getter
     @Id
@@ -74,7 +76,7 @@ public class Item {
     @Getter
     @Setter
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "\"categoryId\"", nullable = false)
     @Fetch(FetchMode.JOIN)
     private Category category;
