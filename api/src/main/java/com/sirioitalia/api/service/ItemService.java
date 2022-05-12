@@ -1,14 +1,12 @@
 package com.sirioitalia.api.service;
 
 import com.sirioitalia.api.exception.ResourceException;
-import com.sirioitalia.api.exception.ResourceNotFoundException;
 import com.sirioitalia.api.model.Item;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ItemService {
-    Item getItemById(Long id) throws ResourceNotFoundException;
+    Item getItemById(Long id) throws ResourceException;
 
     List<Item> getItems();
 
