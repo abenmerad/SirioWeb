@@ -2,6 +2,7 @@ package com.sirioitalia.api.service;
 
 import java.util.Optional;
 
+import com.sirioitalia.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sirioitalia.api.model.User;
