@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/billings")
@@ -21,6 +22,11 @@ public class BillingController {
     @GetMapping
     public List<Billing> getBillings() {
         return billingService.getBillings();
+    }
+
+    @GetMapping(path = "{billingId}")
+    public Optional<Billing> getSingleBilling(@PathVariable("billingId") Integer billingId) {
+        return billingService.getSingleBilling(billingId);
     }
 
     @PostMapping

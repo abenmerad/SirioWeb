@@ -5,9 +5,7 @@ import com.sirioitalia.api.repository.BillingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,6 +20,11 @@ public class BillingService {
 
     public List<Billing> getBillings() {
         return billingRepository.findAll();
+    }
+
+    public Optional<Billing> getSingleBilling(Integer billingId) {
+        return Optional.ofNullable(billingRepository.findById(billingId).orElseThrow(() -> new IllegalStateException(
+                "billing with id " + billingId + " does not exists")));
     }
 
     public void addNewBilling(Billing billing) {
