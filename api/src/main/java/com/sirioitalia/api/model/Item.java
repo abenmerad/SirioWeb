@@ -1,19 +1,22 @@
 package com.sirioitalia.api.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import javax.persistence.ElementCollection;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@DynamicUpdate
 @Table(name = "items")
 public class Item implements Serializable {
 
@@ -26,29 +29,29 @@ public class Item implements Serializable {
     @Getter
     @Setter
     @NotNull
-    @NotBlank(message = "Cannot be blank")
-    @NotEmpty(message = "Cannot be empty")
+    @NotBlank
+    @NotEmpty
     @Column(nullable = false, unique = true)
     private String label;
 
     @Getter
     @Setter
     @NotNull
-    @NotBlank(message = "Cannot be blank")
-    @NotEmpty(message = "Cannot be empty")
+    @NotBlank
+    @NotEmpty
     @Column(nullable = false)
     private String description;
 
     @Getter
     @Setter
     @Positive
-    @Column(nullable = false)
+    @Column
     private double price;
 
     @Getter
     @Setter
     @Positive
-    @Column(nullable = false)
+    @Column
     private double width;
 
     @Getter
