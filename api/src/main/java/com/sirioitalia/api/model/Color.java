@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Builder
@@ -28,6 +29,7 @@ public class Color {
     @Column(name = "label", nullable = false, unique = true)
     private String label;
 
+    @Pattern(message = "Color must be a valid hexadecimal format", regexp = "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")
     @Getter
     @Setter
     @NotBlank
