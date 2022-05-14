@@ -5,13 +5,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.sirioitalia.api.exception.ResourceException;
-import com.sirioitalia.api.exception.ResourceNotFoundException;
 import com.sirioitalia.api.model.Color;
 import com.sirioitalia.api.service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

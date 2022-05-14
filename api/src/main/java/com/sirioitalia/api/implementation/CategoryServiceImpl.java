@@ -1,8 +1,9 @@
-package com.sirioitalia.api.service;
+package com.sirioitalia.api.implementation;
 
 import com.sirioitalia.api.exception.ResourceException;
 import com.sirioitalia.api.model.Category;
 import com.sirioitalia.api.repository.CategoryRepository;
+import com.sirioitalia.api.service.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getCategories() {
-        return categoryRepository.findAll();
+        return (List<Category>) categoryRepository.findAll();
     }
 
     @Override

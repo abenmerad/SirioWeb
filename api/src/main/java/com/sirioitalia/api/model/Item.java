@@ -1,16 +1,17 @@
 package com.sirioitalia.api.model;
 
+import com.sirioitalia.api.embeddable.Dimension;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import javax.persistence.ElementCollection;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -20,11 +21,10 @@ import java.util.Set;
 @Table(name = "items")
 public class Item implements Serializable {
 
-    @Getter
     @Id
+    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    protected Long id;
 
     @Getter
     @Setter
@@ -48,28 +48,15 @@ public class Item implements Serializable {
     @Column
     private double price;
 
+    @NotNull
     @Getter
     @Setter
-    @Positive
-    @Column
-    private double width;
+    @Embedded
+    private Dimension dimension;
 
     @Getter
     @Setter
     @Positive
-    @Column(nullable = false)
-    private double length;
-
-    @Getter
-    @Setter
-    @Positive
-    @Column(nullable = false)
-    private double height;
-
-    @Getter
-    @Setter
-    @Positive
-    @Column(nullable = false)
     private double weight;
 
     @PositiveOrZero
@@ -89,4 +76,10 @@ public class Item implements Serializable {
             joinColumns = @JoinColumn(name = "\"itemId\""),
             inverseJoinColumns = @JoinColumn(name = "\"colorId\"", referencedColumnName = "id"))
     private Collection<Color> appliedColors = new java.util.ArrayList<>();
+
+    @Getter
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.REMOVE)
+    @Fetch(FetchMode.SUBSELECT)
+    private Collection<Image> images = new ArrayList<>();
+
 }

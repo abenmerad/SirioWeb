@@ -1,8 +1,11 @@
-package com.sirioitalia.api.service;
+package com.sirioitalia.api.implementation;
 
 import com.sirioitalia.api.exception.ResourceException;
+import com.sirioitalia.api.model.Image;
 import com.sirioitalia.api.model.Item;
+import com.sirioitalia.api.repository.ImageRepository;
 import com.sirioitalia.api.repository.ItemRepository;
+import com.sirioitalia.api.service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +19,22 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private static final Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
     private ItemRepository itemRepository;
+    private ImageRepository imageRepository;
 
     public ItemServiceImpl() {
         super();
     }
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, ImageRepository imageRepository) {
         super();
         this.itemRepository = itemRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
     public List<Item> getItems() {
-        return itemRepository.findAll();
+        return (List<Item>) itemRepository.findAll();
     }
 
     @Override
@@ -43,9 +48,21 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item createItem(Item item) throws ResourceException {
         try {
-            return itemRepository.save(item);
+            Item createdItem = itemRepository.save(item);
+
+            if (item.getImages() != null ) {
+                for (Image image:
+                     item.getImages()) {
+
+                    image.setItem(item);
+                }
+
+                imageRepository.saveAll(item.getImages());
+            }
+
+            return createdItem;
         } catch (Exception e) {
-            throw new ResourceException("CreateItemException", "An error has occurred: " + HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResourceException(e.getMessage(), e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -70,18 +87,6 @@ public class ItemServiceImpl implements ItemService {
             updatedItem.setPrice(Double.valueOf(item.getPrice()).equals(0.0)
                     ? updatedItem.getPrice()
                     : item.getPrice());
-
-            updatedItem.setLength(Double.valueOf(item.getLength()).equals(0.0)
-                    ? updatedItem.getPrice()
-                    : item.getPrice());
-
-            updatedItem.setWidth(Double.valueOf(item.getWidth()).equals(0.0)
-                    ? updatedItem.getWidth()
-                    : item.getWidth());
-
-            updatedItem.setHeight(Double.valueOf(item.getHeight()).equals(0.0)
-                    ? updatedItem.getHeight()
-                    : item.getHeight());
 
             updatedItem.setWeight(Double.valueOf(item.getWeight()).equals(0.0)
                     ? updatedItem.getWeight()

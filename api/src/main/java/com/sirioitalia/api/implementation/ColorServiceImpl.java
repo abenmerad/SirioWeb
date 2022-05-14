@@ -1,8 +1,9 @@
-package com.sirioitalia.api.service;
+package com.sirioitalia.api.implementation;
 
 import com.sirioitalia.api.exception.ResourceException;
 import com.sirioitalia.api.model.Color;
 import com.sirioitalia.api.repository.ColorRepository;
+import com.sirioitalia.api.service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public List<Color> getColors() throws ResourceException {
-        return colorRepository.findAll();
+        return (List<Color>) colorRepository.findAll();
     }
 
     @Override

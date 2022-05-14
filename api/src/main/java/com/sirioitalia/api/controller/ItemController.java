@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.sirioitalia.api.exception.ResourceException;
-import com.sirioitalia.api.exception.ResourceNotFoundException;
 import com.sirioitalia.api.model.Item;
 import com.sirioitalia.api.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class ItemController {
     }
 
     @GetMapping("/items/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Item> getItemById(@PathVariable Long id) throws ResourceException {
         Item item = itemService.getItemById(id);
 
         return new ResponseEntity<>(item, HttpStatus.FOUND);
