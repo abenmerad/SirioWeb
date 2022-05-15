@@ -42,4 +42,5 @@ public class Image {
     @Fetch(FetchMode.SELECT)
     @JsonIgnore
     private Item item;
+
 }

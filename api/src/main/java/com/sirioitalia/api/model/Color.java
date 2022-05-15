@@ -1,5 +1,7 @@
 package com.sirioitalia.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +15,9 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Table(name = "colors")
 public class Color {
     @Id
@@ -38,6 +43,8 @@ public class Color {
     @Column(name = "hexadecimalCode", nullable = false, unique = true)
     private String hexadecimalCode;
 
-    @ManyToMany(mappedBy = "appliedColors")
-    Set<Item> items;
+    @Getter
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "color")
+    Set<Item> items = new java.util.LinkedHashSet<>();
 }
