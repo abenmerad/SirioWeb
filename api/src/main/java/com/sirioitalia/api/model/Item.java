@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @Table(name = "items")
-public class Item implements Serializable {
+public class Item implements Serializable{
 
     @Id
     @Getter
@@ -44,7 +44,8 @@ public class Item implements Serializable {
     private int stock;
 
     @Getter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @Setter
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private Collection<Image> images = new ArrayList<>();
 
@@ -57,13 +58,11 @@ public class Item implements Serializable {
     @JsonIgnore
     private Furniture furniture;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
-    @JoinTable(
-            name = "items_colors",
-            joinColumns = @JoinColumn(name = "\"itemId\""),
-            inverseJoinColumns = @JoinColumn(name = "\"colorId\"", referencedColumnName = "id")
-    )
-    private List<Color> color = new ArrayList<>();
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "\"colorId\"", nullable = false)
+    @Fetch(FetchMode.JOIN)
+    private Color color;
 }

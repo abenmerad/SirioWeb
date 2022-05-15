@@ -59,7 +59,6 @@ public class ItemService {
 
                     imageToAdd.setItem(item);
                 }
-
                 imageService.createImages((List<Image>) item.getImages());
             }
 

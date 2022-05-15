@@ -54,7 +54,6 @@ public class FurnitureService {
             for (Item itemToAdd:
                  furnitureDetails.getItems()) {
                 itemToAdd.setFurniture(addedFurniture);
-                itemToAdd.setColor(itemToAdd.getColor());
                 itemService.createItem(itemToAdd);
             }
 

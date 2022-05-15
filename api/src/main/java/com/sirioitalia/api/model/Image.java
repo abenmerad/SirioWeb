@@ -37,8 +37,8 @@ public class Image {
     @NotNull
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "\"itemId\"", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "\"itemId\"", nullable = false, updatable = false)
     @Fetch(FetchMode.SELECT)
     @JsonIgnore
     private Item item;

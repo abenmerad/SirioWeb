@@ -70,4 +70,6 @@ public class Furniture implements Serializable{
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "furniture", cascade = CascadeType.REMOVE)
     @Fetch(FetchMode.JOIN)
     private Collection<Item> items = new ArrayList<>();
+
+
 }

@@ -32,7 +32,6 @@ public class FurnitureController {
     @PostMapping("/furnitures")
     public ResponseEntity<Furniture> createFurniture(@Valid @RequestBody Furniture furnitureDetails)
         throws ResourceException {
-        System.out.println(furnitureDetails.toString());
         Furniture createdFurniture = furnitureService.createFurniture(furnitureDetails);
 
         return new ResponseEntity<>(createdFurniture, HttpStatus.CREATED);
