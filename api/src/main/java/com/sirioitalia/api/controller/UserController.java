@@ -1,7 +1,6 @@
 package com.sirioitalia.api.controller;
 
 
-import com.sirioitalia.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,58 +10,54 @@ import com.sirioitalia.api.service.UserService;
 import com.sirioitalia.api.exception.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 public class UserController {
-    @Autowired
     private UserService userService;
 
-    /**
-     * Read - Get all users
-     *
-     * @return - An Iterable object of Employee full filled
-     */
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/users")
-    public Iterable<User> getUsers() {
+    public List<User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/user/{id}")
-    public Optional<User> getUser(@PathVariable("id") final Long id) {
-        return userService.getUser(id);
+    public ResponseEntity<User> getUserById(@PathVariable Long id) throws ResourceException {
+        User foundedUser = userService.getUserById(id);
+
+
+        return new ResponseEntity<>(foundedUser, HttpStatus.FOUND);
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
-
-        Optional<User> user = userService.getUser(id);
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+
+        return new ResponseEntity<>(HttpStatus.GONE);
     }
 
     @PutMapping("/user/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody User userDetails) throws ResourceNotFoundException {
-        User user = userService.getUser(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found on :: "+ id));
+            @RequestBody User userDetails) throws ResourceException {
 
-        user.setEmail(userDetails.getEmail());
-        user.setName(userDetails.getName());
-        user.setPassword(userDetails.getPassword());
-        user.setAddress(userDetails.getAddress());
-        user.setCity(userDetails.getCity());
-        user.setCountry(userDetails.getCountry());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setPostCode(userDetails.getPostCode());
-        final User updatedUser = userService.saveUser(user);
-        return ResponseEntity.ok(updatedUser);
+            User updatedUser = userService.updateUser(id, userDetails);
+
+
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public User createUser(@Valid @RequestBody User user ) {
-        return userService.saveUser(user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody User userDetails ) throws ResourceException {
+        User createdUser = userService.createUser(userDetails);
+        
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
 }

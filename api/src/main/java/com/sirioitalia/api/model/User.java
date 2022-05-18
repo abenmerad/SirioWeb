@@ -1,6 +1,9 @@
 package com.sirioitalia.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sirioitalia.api.embeddable.Address;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -10,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 
 @Builder
@@ -21,62 +26,55 @@ public class User {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Getter
     @Setter
-    @Column(name = "name")
-    private String name;
+    @Column(name = "\"firstName\"")
+    private String firstName;
 
     @Getter
     @Setter
-    @Column(name = "email")
+    @Column(name = "\"lastName\"")
+    private String lastName;
+
+    @Email
+    @Getter
+    @Setter
+    @Column
     private String email;
 
     @Getter
     @Setter
-    @Column(name = "password")
-    private String password;
+    @Column(name = "\"passwordHash\"")
+    private String passwordHash;
+
+    @Past
+    @Getter
+    @Setter
+    @Column(name = "\"birthDate\"")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate birthDate;
 
     @Getter
     @Setter
-    @Column(name = "birthdate")
-    private LocalDate birthdate;
-
-    @Getter
-    @Setter
-    @Column(name = "phoneNumber")
+    @Column(name = "\"phoneNumber\"")
     private String phoneNumber;
 
+    @NotNull
     @Getter
     @Setter
-    @Column(name = "address")
-    private String address;
+    @Embedded
+    private Address address;
 
     @Getter
-    @Setter
-    @Column(name = "city")
-    private String city;
-
-    @Getter
-    @Setter
-    @Column(name = "postalCode")
-    private String postCode;
-
-    @Getter
-    @Setter
-    @Column(name = "Country")
-    private String country;
-
-    @Getter
-    @Setter
-    @Column(name = "createdAt")
+    @CreatedDate
+    @Column(name = "\"createdAt\"", nullable = false)
     private Date createdAt;
 
     @Getter
     @Setter
-    @ManyToOne( optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "\"roleId\"", nullable = false)
-    private  Role roleId;
+    private  Role role;
 }
