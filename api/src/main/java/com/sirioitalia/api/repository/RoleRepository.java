@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import com.sirioitalia.api.model.Role;
 
 @Repository
-public interface RoleRepository extends CrudRepository<Role, Integer> {
+public interface RoleRepository extends CrudRepository<Role, Long> {
 
 }

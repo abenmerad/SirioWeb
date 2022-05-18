@@ -3,9 +3,11 @@ package com.sirioitalia.api.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sirioitalia.api.embeddable.Address;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 import javax.persistence.Entity;
@@ -22,7 +24,7 @@ import javax.validation.constraints.Past;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,7 @@ public class User {
     @Email
     @Getter
     @Setter
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Getter
@@ -58,7 +60,7 @@ public class User {
 
     @Getter
     @Setter
-    @Column(name = "\"phoneNumber\"")
+    @Column(name = "\"phoneNumber\"", unique = true)
     private String phoneNumber;
 
     @NotNull
@@ -68,13 +70,13 @@ public class User {
     private Address address;
 
     @Getter
-    @CreatedDate
-    @Column(name = "\"createdAt\"", nullable = false)
-    private Date createdAt;
+    @CreationTimestamp
+    @Column(name = "\"registrationDate\"", updatable = false)
+    private Date registrationDate;
 
     @Getter
     @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "\"roleId\"", nullable = false)
-    private  Role role;
+    private Role role;
 }

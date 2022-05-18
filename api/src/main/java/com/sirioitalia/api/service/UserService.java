@@ -16,10 +16,6 @@ import java.util.List;
 public class UserService {
     private UserRepository userRepository;
 
-    public UserService() {
-        super();
-    }
-
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -38,8 +34,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id) {
-        User userToDelete = userRepository.findById(id)
+    public void deleteUser(Long userId) {
+        User userToDelete = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceException(HttpStatus.NOT_FOUND.getReasonPhrase(), "User not found"));
 
 
