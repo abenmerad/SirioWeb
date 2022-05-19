@@ -19,15 +19,16 @@ import java.util.HashMap;
 public class PasswordHash {
     private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
 
-    private static final int SALT_BYTE_SIZE = 128;
-    private static final int HASH_SIZE_INDEX = 128;
+    private static final int KEY_LENGTH = 32;
+    private static final int SALT_BYTE_SIZE = 64;
+    private static final int HASH_BYTE_SIZE = 64;
 
 
     private static final int HASH_SECTIONS = 2;
     private static final int SALT_INDEX = 1;
-    private static final int PBKDF2_INDEX = 0;
+    private static final int HASH_INDEX = 0;
 
-    private static final int PBKDF2_ITERATIONS = 20000;
+    private static final int PBKDF2_ITERATIONS = 10000;
 
     private static final String PEPPER = "jD7umHzn5vPGpdwBBpGrkAtzsa7uP3fYxc4HwuUczkJN9QZAPxRZHUqYU75kYVU7YAE6Tb84mtt7UhxzEdacJaNu7HrHeVEPmVLQWvKTz3QjbYHFNJvpv8ttsHZgvvWs2y8NDHj3AKWBzgTdBdcVWvdYPP69VSrM2pcwGm98GWz7PhVf7X2ThRuWgrG3TJsLHeSfrRYHq9E4hb9ZKMwEePcmQKZA53bp7Te8m4FB4WvWXfMzDT4Hz6EZsfr78cm5";
 
@@ -45,7 +46,7 @@ public class PasswordHash {
         random.nextBytes(salt);
 
         // Hash the password
-        byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, SALT_BYTE_SIZE);
+        byte[] hash = pbkdf2(password, salt);
         int hashSize = hash.length;
 
         String parts = toBase64(hash) +
@@ -81,7 +82,7 @@ public class PasswordHash {
 
         byte[] hash = null;
         try {
-            hash = fromBase64(params[PBKDF2_INDEX]);
+            hash = fromBase64(params[HASH_INDEX]);
         } catch (IllegalArgumentException ex) {
             throw new InvalidHashException(
                     "Base64 decoding of pbkdf2 output failed.",
@@ -89,34 +90,17 @@ public class PasswordHash {
             );
         }
 
-        int storedHashSize = 0;
-        try {
-            storedHashSize = Integer.parseInt(params[HASH_SIZE_INDEX]);
-        } catch (NumberFormatException ex) {
-            throw new InvalidHashException(
-                    "Could not parse the hash size as an integer.",
-                    ex
-            );
-        }
-
-        if (storedHashSize != hash.length) {
-            throw new InvalidHashException(
-                    "Hash length doesn't match stored hash length."
-            );
-        }
-
         byte[] pepper = PEPPER.getBytes(StandardCharsets.UTF_8);
-        byte[] saltAndPepper = null;
+        ByteArrayOutputStream saltAndPepper = new ByteArrayOutputStream();
 
         try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            outputStream.write(salt);
-            outputStream.write(pepper);
+            saltAndPepper.write(salt);
+            saltAndPepper.write(pepper);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
-        byte[] testHash = pbkdf2(password, saltAndPepper, PBKDF2_ITERATIONS, hash.length);
+        byte[] testHash = pbkdf2(password, saltAndPepper.toByteArray());
         // Compare the hashes in constant time. The password is correct if
         // both hashes match.
         return slowEquals(hash, testHash);
@@ -129,7 +113,7 @@ public class PasswordHash {
         return diff == 0;
     }
 
-    private static byte[] pbkdf2(char[] password, byte[] salt, int iterations, int bytes)
+    private static byte[] pbkdf2(char[] password, byte[] salt)
             throws CannotPerformOperationException {
         try {
             byte[] pepper = PEPPER.getBytes(StandardCharsets.UTF_8);
@@ -140,7 +124,7 @@ public class PasswordHash {
 
             byte[] saltAndPepper = outputStream.toByteArray();
 
-            PBEKeySpec spec = new PBEKeySpec(password, saltAndPepper, iterations, bytes * 8);
+            PBEKeySpec spec = new PBEKeySpec(password, saltAndPepper, PBKDF2_ITERATIONS, HASH_BYTE_SIZE * 8);
             SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
             return skf.generateSecret(spec).getEncoded();
         } catch (NoSuchAlgorithmException ex) {

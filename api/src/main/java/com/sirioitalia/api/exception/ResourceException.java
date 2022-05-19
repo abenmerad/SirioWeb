@@ -30,13 +30,13 @@ public class ResourceException extends RuntimeException {
     }
 
     public ResourceException(String errorCode, String message, HttpStatus status) {
-        super(message + status, null, false, false);
+        super(message + status, null, true, true);
         this.errorCode = errorCode;
         this.status = status;
     }
 
     public ResourceException(String message, Throwable cause, HttpStatus status) {
-        super(message + status, cause, false, false);
+        super(message + status, cause, true, true);
         this.status = status;
     }
 

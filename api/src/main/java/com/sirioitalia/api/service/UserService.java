@@ -64,26 +64,34 @@ public class UserService {
                     ? foundedUser.getLastName()
                     : userDetails.getLastName());
 
-            foundedUser.setPasswordHash(userDetails.getPasswordHash() == null
-                    ? foundedUser.getPasswordHash()
-                    : userDetails.getPasswordHash());
+            if (userDetails.getPasswordHash() != null) {
+                String formattedPassword = String.format("%s:%s", foundedUser.getPasswordHash(), foundedUser.getPasswordSalt());
 
-            foundedUser.getAddress().setCity(userDetails.getAddress().getCity() == null
-                    ? foundedUser.getAddress().getCity()
-                    : userDetails.getAddress().getCity());
+                if (!passwordEncoder.matches(userDetails.getPasswordHash(), formattedPassword)) {
+                    HashMap<String, String> hashedPassword = encodePassword(userDetails.getPasswordHash());
+                    foundedUser.setPasswordHash(hashedPassword.get("hash"));
+                    foundedUser.setPasswordSalt(hashedPassword.get("salt"));
+                }
+            }
 
-            foundedUser.getAddress().setStreetName(userDetails.getAddress().getStreetName() == null
-                    ? foundedUser.getAddress().getStreetName()
-                    : userDetails.getAddress().getStreetName());
+            if (userDetails.getAddress() != null) {
+                foundedUser.getAddress().setCity(userDetails.getAddress().getCity() == null
+                        ? foundedUser.getAddress().getCity()
+                        : userDetails.getAddress().getCity());
 
-            foundedUser.getAddress().setStreetNumber(userDetails.getAddress().getStreetNumber() == null
-                    ? foundedUser.getAddress().getStreetNumber()
-                    : userDetails.getAddress().getStreetNumber());
+                foundedUser.getAddress().setStreetName(userDetails.getAddress().getStreetName() == null
+                        ? foundedUser.getAddress().getStreetName()
+                        : userDetails.getAddress().getStreetName());
 
-            foundedUser.getAddress().setZipCode(userDetails.getAddress().getZipCode() == null
-                    ? foundedUser.getAddress().getZipCode()
-                    : userDetails.getAddress().getZipCode());
+                foundedUser.getAddress().setStreetNumber(userDetails.getAddress().getStreetNumber() == null
+                        ? foundedUser.getAddress().getStreetNumber()
+                        : userDetails.getAddress().getStreetNumber());
 
+                foundedUser.getAddress().setZipCode(userDetails.getAddress().getZipCode() == null
+                        ? foundedUser.getAddress().getZipCode()
+                        : userDetails.getAddress().getZipCode());
+
+            }
 
             foundedUser.setPhoneNumber(userDetails.getPhoneNumber() == null
                     ? foundedUser.getPhoneNumber()
@@ -111,7 +119,7 @@ public class UserService {
     }
 
     private HashMap<String, String> encodePassword(CharSequence password) {
-        HashMap<String, String> hashedPassword = new HashMap<String, String>();
+        HashMap<String, String> hashedPassword = new HashMap<>();
 
         String[] hashAndSaltPassword = passwordEncoder.encode(password).split(":");
 
