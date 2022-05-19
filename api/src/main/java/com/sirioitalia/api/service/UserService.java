@@ -6,18 +6,22 @@ import com.sirioitalia.api.repository.UserRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Data
 @Service
 public class UserService {
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -92,12 +96,30 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(User user) throws ResourceException {
+    public User createUser(User userDetails) throws ResourceException {
         try {
-            return userRepository.save(user);
+            HashMap<String, String> hashedPassword = encodePassword(userDetails.getPasswordHash());
+
+            userDetails.setPasswordHash(hashedPassword.get("hash"));
+            userDetails.setPasswordSalt(hashedPassword.get("salt"));
+
+
+            return userRepository.save(userDetails);
         } catch (Exception e) {
             throw new ResourceException(e.getMessage(), e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private HashMap<String, String> encodePassword(CharSequence password) {
+        HashMap<String, String> hashedPassword = new HashMap<String, String>();
+
+        String[] hashAndSaltPassword = passwordEncoder.encode(password).split(":");
+
+        hashedPassword.put("hash", hashAndSaltPassword[0]);
+        hashedPassword.put("salt", hashAndSaltPassword[1]);
+
+
+        return hashedPassword;
     }
 
 }

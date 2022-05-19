@@ -51,6 +51,11 @@ public class User implements Serializable {
     @Column(name = "\"passwordHash\"")
     private String passwordHash;
 
+    @Getter
+    @Setter
+    @Column(name = "\"passwordSalt\"")
+    private String passwordSalt;
+
     @Past
     @Getter
     @Setter
@@ -72,7 +77,7 @@ public class User implements Serializable {
     @Getter
     @CreationTimestamp
     @Column(name = "\"registrationDate\"", updatable = false)
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     @Getter
     @Setter
